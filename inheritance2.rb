@@ -6,10 +6,10 @@ class Hero
     attr_reader :quirks
 		attr_reader :consang
 
-		attr_accessor :childstats
-		attr_accessor :childquirks
-		attr_accessor :childtraits
-		attr_accessor :childconsang
+		# attr_accessor :childstats
+		# attr_accessor :childquirks
+		# attr_accessor :childtraits
+		# attr_accessor :childconsang
 
 		#consang is the consanguinity seed, a representation of how genetically distinct the organism is. This tracks inbreeding.
 
@@ -22,6 +22,31 @@ class Hero
 		@consang = consang
   end
 
+
+  def consangcombine(other)
+
+    return @childconsang = ((@consang + other.consang) / 2 ) + rand(-50..50) if (@consang-5000...@consang+5000).include?(other.consang)
+
+
+    if @consang > other.consang
+      big = @consang
+      small = other.consang
+    else
+      big = other.consang
+      small = @consang
+    end
+
+    working = 10000-big
+    working += small
+    working = working / 2
+    working += big
+    working = working % 10000
+    working += + rand(-50..50)
+    @childconsang = working
+
+  end
+
+
   def statscombine(other)
 		i = 0
 		@childstats = []
@@ -33,29 +58,36 @@ class Hero
   end
 
 
+
+
 	def traitscombine(other)
 
 		i = 0
 		@childtraits = []
 
 		while i < traits.count
-			dice = rand(3)
+			dice = rand(6)
 
-			if dice == 1
+			if dice == 0 || dice == 1
 				@childtraits[i] = traits[i]
 
-			elsif dice == 2
+			elsif dice == 2 || dice == 3
 				@childtraits[i] = other.traits[i]
 
+      elsif dice == 4
+        @childtraits[i] = (@childconsang / 400) + 10
+
 			else
+
 				@childtraits[i] = rand(24) + 10
 			end
 			i += 1
 		end
 
-		inbreeding(other) if (consang - other.consang).abs < 5000
+		inbreeding(other) if (consang - other.consang).abs < 20
 		@childtraits
 	end
+
 
 	def inbreeding(other)
 		i = 0
@@ -78,20 +110,20 @@ class Hero
 	end
 
 
-
+  def breed(other)
+    p consangcombine(other)
+    p statscombine(other)
+    p traitscombine(other)
+  end
 
 
 end
-
-
 
 #wishlist:
 
 #weird traits like big ears, and more of them.
 
 #more description: hair color, eye color, height, build,
-
-#inbreeding counter
 
 #more quirks; better tutoring system
 
@@ -101,7 +133,7 @@ end
 
 
 $trait_dict = {
-	"10" => "Lithe: +2 Dex, -3 Str",
+	"10" => "Willowy: +2 Dex, -3 Str",
 	"11" => "Bear Strength: +2 Str",
 	"12" => "Puny: -2 Str",
 	"13" => "Brainy: +2 Int",
@@ -113,7 +145,7 @@ $trait_dict = {
 	"19"=> "Hearty: +2 Con",
 	"20" => "Sickly: -2 Con",
 	"21" => "Impressionable: -2 Wis",
-	"22" => "Strong Will: +2 Wis",
+	"22" => "Strong Willed: +2 Wis",
 	"23" => "Kingmaker: More male children",
 	"24" => "Queenmaker: More female children",
 	"25" => "Nimble: +2 Dex",
@@ -125,6 +157,8 @@ $trait_dict = {
 	"31" => "Big-Boned: +2 Con, -3 Dex.",
 	"32" => "Brutish: +2 Str, -3 Dex",
 	"33" => "Light Frame: +10 Speed, -2 Con",
+  "34" => "High-energy: +2 CHA",
+  "35" => "Sedate: -2 CHA",
 }
 
 
@@ -206,7 +240,7 @@ $quirk_dict = {
 }
 
 
-john = Hero.new("John", [10,10,10,10,10,10,] , [10, 12] , [5,6], 1)
-jane = Hero.new("Jane", [10,10,10,10,10,10,] , [14, 13] , [1,2], 1)
+john = Hero.new("John", [10,10,10,10,10,10,] , [10, 11] , [5,6], 4000)
+jane = Hero.new("Jane", [10,10,10,10,10,10,] , [20, 21] , [1,2], 3000)
 
-p john.traitscombine(jane)
+john.breed(jane)
