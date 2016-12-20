@@ -1,4 +1,5 @@
 require_relative 'bloodline_tables.rb'
+load 'children.rb'
 
 
 
@@ -124,7 +125,7 @@ class Hero
 
     write_to_file
 
-    Hero.new("name", @childstats, @childtraits, nil, @childconsang)
+    Hero.new("name", @childstats, @childtraits, nil, @childconsang, nil, nil)
 
 
   end
@@ -154,13 +155,32 @@ end
 # jane = Hero.new("Jane", [10,10,10,10,10,10,] , [10, 10, 10] , [5,5,5], 4500)
 
 #read in the children.txt and make a Hero object for each line
-IO.foreach('children.txt') do |line|
-  linearr = line.split","
-  linearr.each do |el|
-    p el
-  end
+# IO.foreach('children.txt') do |line|
+#   linearr = line.split","
+#   i = 1
+#   while i < linearr.count
+#     linearr[i] = linearr[i].split" "
+#     linearr[i].map! do |el|
+#       el = el.to_i
+#     end
+#     i += 1
+#   end
+#   p linearr
+#
+# end
 
+
+File.open('children.rb', 'r').each do |line|
+  h = eval(line)
+  variable_name = h[:name]
+  instance_variable_set("@#{variable_name}", Hero.new(h[:name], h[:stats], h[:traits], h[:quirks], h[:consang], h[:magic], h[:longevity]))
 end
 
+#
+# for x in 1..5
+#     variable_name = "item_#{x}"
+#     instance_variable_set("@#{variable_name}", "value to assign to variable")
+# end
 
-p john.breed(jane)
+
+p @john.breed(@john)
