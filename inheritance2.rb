@@ -9,6 +9,7 @@ class Hero
     attr_reader :traits
     attr_reader :quirks
 		attr_reader :consang
+    attr_reader :magic
 
 		# attr_accessor :childstats
 		# attr_accessor :childquirks
@@ -117,15 +118,20 @@ class Hero
 		end
 	end
 
+  def magiccombine(other)
+    @childmagic = [@magic[rand(2)],(other.magic[rand(2)])]
+  end
+
 
   def breed(other)
     consangcombine(other)
     statscombine(other)
     traitscombine(other)
+    magiccombine(other)
 
     write_to_file
 
-    Hero.new("name", @childstats, @childtraits, nil, @childconsang, nil, nil)
+    Hero.new("name", @childstats, @childtraits, nil, @childconsang, @childmagic, nil)
 
 
   end
@@ -141,33 +147,23 @@ end
 #wishlist:
 
 #pretty phenotype print, which describes the characters without saying their attributes directly.
+# "The child is male, with blonde hair and brown eyes. They look strong. Miscellaneous other features are: reptilian scales."
+
 
 #more quirks; better tutoring system
 
+
 #longevity counter which determines when the person is going to die
 
+
 #script that increments the age of the children and kills them as they pass their death-date
+
 
 #p (9999 % 100) * 100
 
 
 # john = Hero.new("John", [10,10,10,10,10,10,] , [10, 10, 10] , [5,5,5], 4000)
 # jane = Hero.new("Jane", [10,10,10,10,10,10,] , [10, 10, 10] , [5,5,5], 4500)
-
-#read in the children.txt and make a Hero object for each line
-# IO.foreach('children.txt') do |line|
-#   linearr = line.split","
-#   i = 1
-#   while i < linearr.count
-#     linearr[i] = linearr[i].split" "
-#     linearr[i].map! do |el|
-#       el = el.to_i
-#     end
-#     i += 1
-#   end
-#   p linearr
-#
-# end
 
 
 File.open('children.rb', 'r').each do |line|
@@ -176,11 +172,5 @@ File.open('children.rb', 'r').each do |line|
   instance_variable_set("@#{variable_name}", Hero.new(h[:name], h[:stats], h[:traits], h[:quirks], h[:consang], h[:magic], h[:longevity]))
 end
 
-#
-# for x in 1..5
-#     variable_name = "item_#{x}"
-#     instance_variable_set("@#{variable_name}", "value to assign to variable")
-# end
 
-
-p @john.breed(@john)
+p @john.breed(@jane)
