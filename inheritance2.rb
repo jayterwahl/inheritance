@@ -1,3 +1,5 @@
+require 'csv'
+
 require_relative 'bloodline_tables.rb'
 load 'children.rb'
 
@@ -18,7 +20,7 @@ class Hero
 
 		#consang is the consanguinity seed, a representation of the genome of the organism. This tracks mage-bloodline, inbreeding, and appearance.
 
-  def initialize(name, stats, traits, quirks, consang, magic, longevity)
+  def initialize(name, stats, traits, quirks, consang, magic, age, longevity)
     @name = name
     @stats = stats
     @traits = traits
@@ -133,13 +135,14 @@ class Hero
 
     Hero.new("name", @childstats, @childtraits, nil, @childconsang, @childmagic, nil)
 
-
   end
 
 
   def write_to_file
 
   end
+
+
 
 
 end
@@ -172,5 +175,13 @@ File.open('children.rb', 'r').each do |line|
   instance_variable_set("@#{variable_name}", Hero.new(h[:name], h[:stats], h[:traits], h[:quirks], h[:consang], h[:magic], h[:longevity]))
 end
 
+
+# csv = []
+#
+# CSV.foreach('genotype.csv', headers: true, :header_converters => :symbol) do |row|
+#   csv.push(row.to_hash)
+# end
+#
+# p csv
 
 p @john.breed(@jane)
